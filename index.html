@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A&A Breeze | Luxury Sweet Treats Mitchells Plain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root { --hot-pink: #FF69B4; --baby-pink: #FFF0F5; --blush-pink: #FFD1DC; }
+        body { font-family: 'Poppins', sans-serif; color: #333; background-color: #fff; scroll-behavior: smooth; overflow-x: hidden; }
+        h1, h2, h3, h4, .script-font { font-family: 'Parisienne', cursive; }
+        .bg-pink-gradient { background: linear-gradient(135deg, #FFF0F5 0%, #FFD1DC 100%); }
+        
+        .btn-hot-pink { background-color: #FF69B4; color: white; transition: 0.3s; box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3); }
+        .btn-hot-pink:hover { transform: translateY(-3px); background-color: #FF1493; }
+
+        .product-card { background: white; border-radius: 25px; overflow: hidden; border: 1px solid #FFD1DC; transition: 0.3s; display: flex; flex-direction: column; height: 100%; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255, 182, 193, 0.4); }
+        
+        .card-img { height: 200px; width: 100%; object-fit: cover; border-bottom: 1px solid #FFD1DC; background-color: #FFF0F5; }
+
+        /* Cart Sidebar Styles */
+        #cart-sidebar { position: fixed; right: -400px; top: 0; width: 350px; height: 100%; background: white; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 2000; transition: 0.4s; padding: 25px; display: flex; flex-direction: column; }
+        #cart-sidebar.active { right: 0; }
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 1500; display: none; }
+        .cart-overlay.active { display: block; }
+        
+        .qty-btn { background: #FFD1DC; color: #FF1493; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <!-- SHOPPING CART SIDEBAR -->
+    <div class="cart-overlay" id="overlay" onclick="toggleCart()"></div>
+    <div id="cart-sidebar">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h2 class="text-3xl text-pink-500">Your Basket</h2>
+            <button onclick="toggleCart()" class="text-gray-400 text-2xl">&times;</button>
+        </div>
+        
+        <div id="cart-items" class="flex-grow overflow-y-auto space-y-4">
+            <!-- Items appear here dynamically -->
+        </div>
+
+        <div class="border-t pt-4 mt-4">
+            <div class="flex justify-between font-bold text-lg mb-2">
+                <span>Total:</span>
+                <span id="cart-total" class="text-pink-600">R0.00</span>
+            </div>
+            <p id="deposit-warning" class="text-[11px] text-pink-600 font-bold hidden bg-pink-50 p-2 rounded-lg mb-4">
+                ⚠️ Orders over R150 require a 50% deposit to confirm.
+            </p>
+            
+            <label class="text-[10px] uppercase font-bold text-gray-400 ml-1">Your Full Name</label>
+            <input type="text" id="cust-name" placeholder="Enter name here..." class="w-full p-3 border border-pink-100 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-pink-300">
+            
+            <button onclick="checkout()" class="w-full btn-hot-pink py-4 rounded-full font-bold uppercase tracking-widest text-sm">
+                Checkout to WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- STICKY BASKET BUTTON -->
+    <button onclick="toggleCart()" class="fixed bottom-8 right-8 z-[1000] bg-pink-500 text-white p-5 rounded-full shadow-2xl animate__animated animate__bounceInUp">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/></svg>
+        <div id="cart-count" class="absolute top-0 right-0 bg-white text-pink-500 text-[10px] font-bold px-2 py-1 rounded-full border border-pink-200">0</div>
+    </button>
+
+    <!-- NAVIGATION -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-pink-100">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-3xl script-font text-pink-500 font-bold">A&A Breeze</div>
+            <div class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Mitchells Plain • Collection Only</div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="bg-pink-gradient min-h-[60vh] flex items-center mb-10">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center py-10">
+            <div class="animate__animated animate__fadeInLeft">
+                <span class="bg-white text-pink-500 px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase mb-4 shadow-sm inline-block">Founder & Baker</span>
+                <h1 class="text-6xl md:text-8xl text-pink-600 mb-6 leading-tight">Sweet Moments</h1>
+                <p class="text-lg text-gray-700 mb-8 leading-relaxed max-w-md">
+                    Handmade luxury treats baked with love. 
+                    <br><br>
+                    <span class="font-bold text-pink-600">📍 Pickup from Mitchells Plain.</span>
+                    <br><span class="text-sm">50% Deposit required on orders over R150.</span>
+                </p>
+                <a href="#menu" class="btn-hot-pink px-10 py-4 rounded-full font-bold">Browse & Shop</a>
+            </div>
+            <div class="hidden md:block animate__animated animate__fadeInRight text-right">
+                <img src="owner.jpg" alt="Owner" class="inline-block w-full h-[500px] object-cover rounded-[60px] border-[12px] border-white shadow-2xl">
+            </div>
+        </div>
+    </header>
+
+    <!-- MENU GRID -->
+    <section id="menu" class="container mx-auto px-6 py-10">
+        <div class="text-center mb-16">
+            <h2 class="text-6xl text-pink-500 mb-4">Our Menu</h2>
+            <div class="w-24 h-1 bg-pink-200 mx-auto rounded-full mb-4"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- JavaScript will render products here -->
+            <script>
+                const products = [
+                    { id: 1, name: 'Bollas (Pack of 15)', price: 45, img: 'bollas.jpg' },
+                    { id: 2, name: 'Bollas (Single)', price: 3.50, img: 'bollas.jpg' },
+                    { id: 3, name: 'Koeksisters (Pack of 25)', price: 50, img: 'koeksisters.jpg' },
+                    { id: 4, name: 'Koeksisters (Single)', price: 2.50, img: 'koeksisters.jpg' },
+                    { id: 5, name: 'Eclairs (Single)', price: 9, img: 'eclairs.jpg' },
+                    { id: 6, name: 'Eclairs (Box of 4)', price: 35, img: 'eclairs.jpg' },
+                    { id: 7, name: 'Brownie', price: 10, img: 'brownie.jpg' },
+                    { id: 8, name: 'Cream Puff', price: 10, img: 'creampuffs.jpg' },
+                    { id: 9, name: 'Horns', price: 10, img: 'horns.jpg' },
+                    { id: 10, name: 'Donut Burger', price: 25, img: 'donutburger.jpg' },
+                    { id: 11, name: 'Breeze Meal', price: 50, img: 'breezemeal.jpg' },
+                    { id: 12, name: 'Tea Time Box', price: 40, img: 'teatimebox.jpg' },
+                    { id: 13, name: 'Party Box', price: 150, img: 'partybox.jpg' },
+                    { id: 14, name: 'Vanilla Glazed Donut', price: 10, img: 'vanilladonut.jpg' },
+                    { id: 15, name: 'Chocolate Donut', price: 10, img: 'chocdonut.jpg' },
+                    { id: 16, name: 'Frozen Ring (Pack of 8)', price: 75, img: 'donuts.jpg' },
+                    { id: 17, name: 'Vanilla Cookie', price: 9, img: 'vanilacookies.jpg' },
+                    { id: 18, name: 'Choc Cookie', price: 9, img: 'choccokkies.jpg' },
+                    { id: 19, name: 'Frozen Waffles (Pack of 4)', price: 45, img: 'waffels.jpg' },
+                    { id: 20, name: 'Loaded Fries', price: 45, img: 'loadedfries.jpg' }
+                ];
+
+                document.write(products.map(p => `
+                    <div class="product-card">
+                        <img src="${p.img}" class="card-img" alt="${p.name}">
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h4 class="text-xl font-bold text-pink-600 mb-1">${p.name}</h4>
+                            <p class="text-gray-500 font-bold mb-4 italic text-sm">R${p.price.toFixed(2)}</p>
+                            <button onclick="addToCart(${p.id})" class="mt-auto btn-hot-pink py-3 rounded-xl text-xs font-bold uppercase tracking-wider">Add to Cart</button>
+                        </div>
+                    </div>
+                `).join(''));
+            </script>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-pink-50 py-12 mt-20 text-center">
+        <div class="text-4xl script-font text-pink-500 mb-4">A&A Breeze</div>
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">&copy; 2025 Mitchells Plain Bakery</p>
+    </footer>
+
+    <!-- CART LOGIC -->
+    <script>
+        let cart = [];
+        const waNumber = "27677625184";
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const inCart = cart.find(item => item.id === id);
+            
+            if (inCart) {
+                inCart.qty++;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+            updateUI();
+            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            item.qty += delta;
+            if (item.qty < 1) cart = cart.filter(i => i.id !== id);
+            updateUI();
+        }
+
+        function updateUI() {
+            const cartList = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const cartCount = document.getElementById('cart-count');
+            const warning = document.getElementById('deposit-warning');
+
+            cartList.innerHTML = cart.length === 0 ? '<p class="text-center text-gray-400 mt-10 italic">Your basket is empty...</p>' : '';
+            
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += (item.price * item.qty);
+                count += item.qty;
+                cartList.innerHTML += `
+                    <div class="flex justify-between items-center bg-pink-50 p-4 rounded-2xl">
+                        <div class="flex-grow">
+                            <p class="font-bold text-sm">${item.name}</p>
+                            <p class="text-xs text-pink-500 font-bold">R${(item.price * item.qty).toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="changeQty(${item.id}, -1)" class="qty-btn">-</button>
+                            <span class="font-bold text-sm">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="qty-btn">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartTotal.innerText = `R${total.toFixed(2)}`;
+            cartCount.innerText = count;
+            total > 150 ? warning.classList.remove('hidden') : warning.classList.add('hidden');
+        }
+
+        function checkout() {
+            const name = document.getElementById('cust-name').value;
+            if (!name) return alert("Please enter your name!");
+            if (cart.length === 0) return alert("Your basket is empty!");
+
+            let total = 0;
+            let itemsString = "";
+            cart.forEach(i => {
+                total += (i.price * i.qty);
+                itemsString += `- ${i.name} (x${i.qty})%0a`;
+            });
+
+            let depositMsg = total > 150 ? `%0a*Note:* Total is over R150. A 50% deposit (R${(total/2).toFixed(2)}) is required to confirm order.` : "";
+
+            const msg = `Hi A%26A Breeze!%0a%0a*Customer Name:* ${name}%0a%0a*Order Details:*%0a${itemsString}%0a*Total Amount:* R${total.toFixed(2)}${depositMsg}%0a%0aPlease let me know when I can collect from Mitchells Plain!`;
+            
+            window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        }
+    </script>
+
+</body>
+</html>
